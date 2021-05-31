@@ -15,7 +15,14 @@ def ping(): #funcion ping que se ejecuta despues de pedir la ruta ping
 
 @app.route("/products", methods= ["GET"]) #tenemos otra ruta que funciona (trabaja) por el metodo http GET, por defecto las rutas funcionan con metodo GET
 def getProducts(): #funcion que retorna los productos like json
-    return jsonify(products) #ya aqui el cliente puede tomar los dato enviados por la Api
+    return jsonify({"products": products, "mensaje": "product's list"}) #Se puede agregar informacion extra
+
+@app.route("/products/<string:product_name>", methods= ["GET"]) #<string:product_name> entrada dinamica de la aplicacion clientes
+def nameProducts(product_name):
+    print(product_name) #imprime la modificacion de la ruta en el product name
+    return "received"
+
+    #return jsonify(products[name:])
 
 if __name__ == "__main__": #si corre commo la principal
     app.run(debug=True, port=4000) #debug is for and 4000 is the port where escucha el servidor
