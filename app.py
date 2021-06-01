@@ -1,6 +1,6 @@
 # aplicacion de python, nuestro bakend, nuetra rest API
 #jsonify combierte un objeto al formato para navegador
-from flask import Flask ,jsonify
+from flask import Flask ,jsonify, request #request permitira ver los datos recividos por la consola
 
 #flask devolvera un objeto llamado app
 app=Flask(__name__) #app sera la aplicacion del servidor
@@ -24,9 +24,17 @@ def nameProducts(product_name):
         return jsonify({"product":productsFound[0]}) #sin el [0] devuelve una lista
     return jsonify({"message":"product not found"})
 
+@app.route("/products", methods=["POST"]) # la razon de que pueda utilizar el mismo nombre de ruta es que funcionaran con distintos metodos HTTP
+def addProduct():
+    print(request.json) #imprime los datos que esta enviando el cliente
+    return "received products"
+
 if __name__ == "__main__": #si corre commo la principal
     app.run(debug=True, port=4000) #debug is for and 4000 is the port where escucha el servidor
     
     #estamos obteniendo datos de una RestApi pero para crear datos necesitamos crear una aplicacion o un formulario que nos permita ingresar los datos que queremos guardar:
     #los programas para esto son Postman, Insomnia, se usaran para probar las otras rutas de la RestApi.
     #la resapi no depende de donde se corra, se puede hacer usar en casi todo.
+
+    #PATCH actualiza tan solo una propiedad de un dato y PUT actualiza un entero
+
