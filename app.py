@@ -1,5 +1,6 @@
 # aplicacion de python, nuestro bakend, nuetra rest API
 #jsonify combierte un objeto al formato para navegador
+from itertools import product
 from flask import Flask ,jsonify, request #request permitira ver los datos recividos por la consola
 
 #flask devolvera un objeto llamado app
@@ -26,8 +27,41 @@ def nameProducts(product_name):
 
 @app.route("/products", methods=["POST"]) # la razon de que pueda utilizar el mismo nombre de ruta es que funcionaran con distintos metodos HTTP
 def addProduct():
-    print(request.json) #imprime los datos que esta enviando el cliente
-    return "received products"
+    new_product={
+        "name": request.json ["name"], # desde request. json quiero recivir el dato relacionado con el nombre
+        "price": request.json ["price"],
+        "quantity": request.json ["quantity"]
+
+    } #imprime los datos que esta enviando el cliente
+    products.append(new_product) #agregar a produtcs.py
+    return jsonify({"message":"Product Added Succesfully", "products": products}) # mostrara el mensaje y la products new list
+
+@app.route("/products/<string:product_name>", methods= ["PUT"]) #actualiza el producto
+def edit_product(product_name):
+    productFound=[product for product in products if product["name"]==product_name]
+    if (len(productFound)>0):
+        productFound[0]["name"]=request.json["name"]
+        productFound[0]["price"]=request.json["price"] #toam la informacion enviada por el cliente (insomnia)
+        productFound[0]["quantity"]=request.json["quantity"]
+        return jsonify({
+            "message":"Product Updated",
+            "product": productFound[0]
+            })
+    return jsonify({"message":"Product no Founded"}) 
+
+@app.route("/products/<string:product_name>", methods= ["DELETE"]) #elimina el producto
+def delete_product(product_name):
+    productFound=[product for product in products if product["name"]==product_name]
+    if (len(productFound) > 0):
+        products.remove(productFound[0])
+        return jsonify({
+            "message":"Product Removeded",
+            "products": products
+        })
+    return jsonify({
+        "message":"Prodict not Found"
+    })
+    
 
 if __name__ == "__main__": #si corre commo la principal
     app.run(debug=True, port=4000) #debug is for and 4000 is the port where escucha el servidor
@@ -37,4 +71,6 @@ if __name__ == "__main__": #si corre commo la principal
     #la resapi no depende de donde se corra, se puede hacer usar en casi todo.
 
     #PATCH actualiza tan solo una propiedad de un dato y PUT actualiza un entero
+
+    #todo esto funciona en memoria si se recarga se reinician los productos, la idea es sustituir products.py por una base de datos
 
